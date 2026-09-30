@@ -57,7 +57,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 <details>
 <summary><strong>Concurrency</strong> · 2 rules</summary>
 
-- [Honor cancellation across every blocking stage](practices/concurrency/honor-cancellation-across-blocking-stages.md)
+- [Honor cancellation and deadlines across every blocking stage](practices/concurrency/honor-cancellation-across-blocking-stages.md)
 - [Keep shared resources alive until their users finish](practices/concurrency/keep-shared-resources-alive-until-users-finish.md)
 
 </details>
@@ -255,7 +255,7 @@ It's the same relationship as a package manager and a package. You install Code 
 
 1. [Install Code Rules](https://code-rules.fabricahq.com/start-here/install/) on your local computers.
 2. [Set up your project](https://code-rules.fabricahq.com/start-here/set-up-project/) to use Code Rules.
-3. Add this library as a source. Within the project directory, run the command below. It selects every group in the pinned v1.1.0 release; delete the `--groups` lines you don't need. The Concurrency group will be available in a later release.
+3. Add this library as a source. Within the project directory, run the command below. It selects every group in the pinned release; delete the `--groups` lines you don't need.
 
    ```sh
    code-rules project add library fabrica \

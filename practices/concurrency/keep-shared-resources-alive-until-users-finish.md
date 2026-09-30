@@ -10,7 +10,7 @@ tags: "concurrency, resources, lifecycle"
 
 Keep a shared resource usable until every operation entitled to use it has finished. Replacing the current resource must not invalidate an earlier user's handle.
 
-### Scope and implementation
+### Implementation
 
 Apply this rule when concurrent operations share a resource with an explicit lifetime, such as a connection pool, file handle, client, or loaded snapshot.
 
@@ -30,7 +30,11 @@ Resource ownership must explain who can use a resource, when that permission end
 
 ### Examples
 
-**Incorrect: protecting publication without protecting use**
+#### Application: Replacing a pool during concurrent use
+
+One request obtains the current pool while another request replaces it.
+
+**Incorrect (counterexample):**
 
 1. Request A reads the current pool under a lock, then releases the lock.
 2. Request A pauses before acquiring a connection.
@@ -39,9 +43,9 @@ Resource ownership must explain who can use a resource, when that permission end
 
 The lock protects pointer lookup, but the pool's lifetime does not cover its user.
 
-**Correct: retiring a pool until its users finish**
+**Correct:**
 
-1. The owner gives request A a lease on the current pool before exposing its handle.
+1. The owner gives request A a lease on the current pool before exposing its handle. A pauses before acquiring a connection.
 2. Request B publishes a replacement pool and retires the old pool. New requests obtain leases on the replacement.
 3. Request A resumes, acquires a connection, completes its work, and releases its lease after returning the connection.
 4. The owner closes the retired pool after its last lease ends.
@@ -57,3 +61,5 @@ For resources that support replacement during use, test controlled interleavings
 - Verify retired resources close only after their users finish, including error exits, and that new users reach the replacement.
 
 For a serial contract, verify the owning boundary prevents use and cleanup from overlapping.
+
+Before reporting a violation, inspect the resource's ownership and shutdown contracts, including any guarantees from the resource itself. A replaceable shared pointer alone does not establish that cleanup can interrupt a user.
