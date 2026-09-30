@@ -1,27 +1,34 @@
 ---
 title: "Derive a parsed value with a method instead of storing it beside its text"
-whenToRead: "Before planning, writing, changing, or reviewing Go structs that hold one value in two forms, such as configuration text and its parsed or normalized form, or code that parses a struct field again or compares such values."
+whenToRead: "Before planning, writing, changing, or reviewing Go structs that keep a value's text and also need its parsed or normalized form, such as configuration settings, or code that parses such a field again or compares such values."
 impact: "MEDIUM"
-impactDescription: "A stored copy of a derived value can drift from its source, so callers disagree about which field to trust, parse the text again, or compare spellings instead of meanings."
+impactDescription: "A stored parsed copy can drift from the text it came from, so callers disagree about which field to trust, parse the text again, or compare spellings instead of meanings."
 tags: "go, structs, parsing, invariants"
 ---
 
 ## Derive a parsed value with a method instead of storing it beside its text
 
-When a struct must keep a value's text, such as a setting spelled the way the user wrote it, store only the text and give the struct a method that returns the parsed form.
-Don't add a second field for the parsed form that every writer must keep in step with the text.
+Keep one authoritative representation of a value.
+When a struct must keep a value's original text and parsing it is cheap and deterministic, derive the parsed form through one method instead of storing a second, independently writable field.
 
 ### Implementation
 
-- Validate the text where the struct is built, such as in the configuration parser, so every struct it returns holds valid text.
-- Add one method that parses the text and returns the parsed form. For an optional value, return `(T, bool)`, where false means the value is absent.
-  Document on the method that construction already validated the text, so parsing can't fail for a struct the parser returned.
+- Store the text in one field, and add one method that parses it and returns the parsed form.
+- Match the method's result to what the type guarantees:
+  - When the text can be invalid, as with an exported field that struct literals and assignments can set, report parse failures separately from absence, such as `(T, bool, error)` for an optional value.
+  - Return `(T, bool)` only when the type guarantees valid text, for example because the field is unexported and a constructor validates it. Then false can only mean the value is absent.
+- Validate the text where the struct is built, such as in the configuration parser, so users see the error early. The method still reports errors when the type doesn't guarantee validity.
 - Send every caller that needs the parsed form through that method, and remove the other places that parse the same field.
-- Compare parsed forms when meaning matters, such as deciding whether a setting changed.
-  Use the text only where the author's spelling should appear: writing the file back, messages, and records of what the author wrote.
+- Compare canonical parsed values, not text, when meaning matters, such as deciding whether a setting changed.
+  Use the type's semantic equality: `==` when parsing produces a canonical, comparable value, or an `Equal` method when field-by-field equality doesn't match the domain's meaning.
+- Use the text only where the author's spelling should appear: writing the file back, messages, and records of what the author wrote.
 
-Store only the parsed form, with no text field, when nothing needs the original spelling; format it for output instead.
-Store both forms only when parsing is costly or needs I/O, and then keep them in unexported fields that only a constructor sets.
+This rule covers stored parsed or normalized copies of retained text. It doesn't cover:
+
+- **Only the parsed form stored:** when nothing needs the original spelling, store the parsed form and format it for output.
+- **Caches of costly parsing:** store both forms only when parsing is costly, and make construction and every later update keep them consistent, such as unexported fields that one constructor and one setter write together. Unexported fields alone don't guarantee that.
+- **Values that need I/O:** a value derived through I/O, such as the commit a tag pointed to when it was fetched, is a snapshot of the outside world, not a function of the text. Store it as its own field and document what it records and when.
+- **Other derived state:** indexes, aggregates, and caches that aren't a parsed form of retained text are outside this rule.
 
 ### Rationale
 
@@ -52,40 +59,58 @@ func refChanged(source Source, recorded string) bool {
 
 Every constructor and fixture must set both fields.
 Other packages parse `Ref` again because nothing guarantees `ParsedRef` is current.
-Comparing the text reports a change when the user rewrites `release/5` as `refs/tags/release/5`, though both name the same tag.
+Comparing the text reports a change when the user rewrites `release/5` as `refs/tags/release/5`, though both are the same reference.
 
 **Correct:**
 
 ```go
+// GitRef is a canonical Git reference: a full tag name, such as refs/tags/release/5, or a lowercase
+// commit SHA. ParseGitRef normalizes every accepted spelling, so == compares meaning.
+type GitRef struct {
+	Kind RefKind
+	Name string
+}
+
 type Source struct {
 	Name string
 	// Ref is the tag or commit the user wrote, or empty when the source follows the newest release.
 	Ref string
 }
 
-// GitRef returns the source's ref, parsed and normalized, and false when the source has none.
-// ParseConfiguration already validated Ref, so parsing can't fail for a source it returned.
-func (s Source) GitRef() (GitRef, bool) {
+// GitRef returns the source's parsed ref. It returns false with a nil error when the source has no ref,
+// and an error when Ref isn't a valid ref, which a struct literal or assignment can produce.
+func (s Source) GitRef() (GitRef, bool, error) {
 	if s.Ref == "" {
-		return GitRef{}, false
+		return GitRef{}, false, nil
 	}
 	ref, err := ParseGitRef(s.Ref)
-	return ref, err == nil
+	if err != nil {
+		return GitRef{}, false, err
+	}
+	return ref, true, nil
 }
 
-// SameRef reports whether ref names the same revision as the source's ref once both are parsed.
-func (s Source) SameRef(ref string) bool {
-	if ref == "" || s.Ref == "" {
-		return ref == s.Ref
+// SameRef reports whether ref is the same normalized reference as the source's ref.
+func (s Source) SameRef(ref string) (bool, error) {
+	own, ok, err := s.GitRef()
+	if err != nil {
+		return false, err
 	}
-	own, ok := s.GitRef()
+	if !ok || ref == "" {
+		return !ok && ref == "", nil
+	}
 	other, err := ParseGitRef(ref)
-	return ok && err == nil && own == other
+	if err != nil {
+		return false, err
+	}
+	return own == other, nil
 }
 ```
 
 `Ref` is the only stored form, so no invariant links two fields.
-Callers get the parsed form from `GitRef`, and `SameRef` compares meanings, so rewriting `release/5` as `refs/tags/release/5` isn't a change.
+Callers get the parsed form from `GitRef`, which keeps a missing ref and an invalid one apart.
+`SameRef` compares canonical values, so rewriting `release/5` as `refs/tags/release/5` isn't a change.
+It compares references, not the commits they resolve to: two different tags on one commit are still different choices.
 The configuration writer and messages still use `Ref`, the user's spelling.
 
 **Also correct (no change needed):**
@@ -101,9 +126,14 @@ Nothing needs the text the user wrote, so the struct stores only the parsed `tim
 
 ### Validation
 
-For each struct field computed from another field of the same struct, check that it's either replaced by a method or unexported and set only by a constructor.
+For each struct that keeps a value's text, look for a field holding its parsed or normalized form.
+Check that it's either replaced by a method or kept consistent by construction and every later update.
+Check that a method returning `(T, bool)` can't hide a parse failure as absence.
 Search for calls that parse the same field outside its method; each is a sign that the stored or derived form isn't trusted.
-Check that comparisons that decide whether a value changed compare parsed forms, not text.
+Check that comparisons that decide whether a value changed compare canonical parsed values with the type's semantic equality, not text.
 
-Two fields that are independent inputs aren't a violation, even when they're related.
-A struct that mirrors an external format carrying both forms isn't a violation, as long as code reads the parsed form through one function.
+These aren't violations:
+
+- Two fields that are independent inputs, even when they're related.
+- A snapshot derived through I/O, stored as its own documented field.
+- A struct that mirrors an external format carrying both forms, as long as code reads the parsed form through one function.
