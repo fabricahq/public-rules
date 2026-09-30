@@ -3,7 +3,7 @@
 <p>
   <a href="LICENSE.md"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
   <a href="https://github.com/fabricahq/code-rules"><img alt="A Code Rules library" src="https://img.shields.io/badge/Code%20Rules-library-6f42c1"></a>
-  <img alt="13 groups, 124 rules" src="https://img.shields.io/badge/rules-124-brightgreen">
+  <img alt="13 groups, 125 rules" src="https://img.shields.io/badge/rules-125-brightgreen">
 </p>
 
 Fabrica Public Rules Library is a collection of engineering rules that tell coding agents how to write and review production-grade code. Each rule covers one practice, such as reproducing a bug with a test before fixing it, or narrowing unknown values in TypeScript, with examples of what to do, what to avoid, and what a reviewer should check.
@@ -25,10 +25,10 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 | [TanStack Router](techs/tanstack-router/) | 10 | Typed routing, data loading, and navigation with TanStack Router |
 | [Zustand](techs/zustand/) | 10 | Managing shared client state with Zustand |
 | [Playwright](techs/playwright/) | 2 | Writing stable browser tests with Playwright |
-| [Go](techs/go/) | 4 | Writing well-documented Go with useful errors |
+| [Go](techs/go/) | 5 | Writing clear, maintainable Go |
 | [Goose](techs/goose/) | 1 | Organizing SQL migrations managed by goose |
 
-### Browse all 124 rules
+### Browse all 125 rules
 
 <details>
 <summary><strong>Testing</strong> · 8 rules</summary>
@@ -216,12 +216,13 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 </details>
 
 <details>
-<summary><strong>Go</strong> · 4 rules</summary>
+<summary><strong>Go</strong> · 5 rules</summary>
 
 - [Comment struct fields whose meaning the type does not show](techs/go/comment-non-obvious-struct-fields.md)
 - [Separate package documentation from file headers](techs/go/comments-package-doc-vs-file-header.md)
 - [Add operation and identifier context to errors at boundaries](techs/go/errors-include-useful-diagnostic-data.md)
 - [Expose error identity only for contract errors](techs/go/errors-use-contract-errors-deliberately.md)
+- [Give text and its parsed form one owner](techs/go/one-owner-for-text-and-parsed-form.md)
 
 </details>
 
