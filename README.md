@@ -222,7 +222,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 - [Separate package documentation from file headers](techs/go/comments-package-doc-vs-file-header.md)
 - [Add operation and identifier context to errors at boundaries](techs/go/errors-include-useful-diagnostic-data.md)
 - [Expose error identity only for contract errors](techs/go/errors-use-contract-errors-deliberately.md)
-- [Keep one representation of text and its parsed form](techs/go/one-representation-for-parsed-text.md)
+- [Give text and its parsed form one owner](techs/go/one-owner-for-text-and-parsed-form.md)
 
 </details>
 

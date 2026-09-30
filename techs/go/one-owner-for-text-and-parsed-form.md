@@ -1,14 +1,14 @@
 ---
-title: "Keep one representation of text and its parsed form"
+title: "Give text and its parsed form one owner"
 whenToRead: "Before planning, writing, changing, or reviewing Go code that keeps a value's text and also needs its parsed or normalized form, such as a configuration setting, or code that parses such a field again or compares such values."
 impact: "MEDIUM"
 impactDescription: "A stored parsed copy can drift from the text it came from, so callers disagree about which field to trust, parse the text again, or compare spellings instead of meanings."
 tags: "go, types, parsing, invariants"
 ---
 
-## Keep one representation of text and its parsed form
+## Give text and its parsed form one owner
 
-Keep one authoritative representation of a value that is written as text.
+When a value is written as text, give its text and parsed form one owner that keeps them consistent.
 Don't store the text and its parsed form in two fields that every writer must keep in step.
 Prefer a value type whose only constructor parses the text; for a value used in one place, a text field with one parsing method is enough.
 
@@ -18,16 +18,17 @@ Use a value type when the value crosses a package boundary or several structs ca
 
 - Define a type with unexported fields holding the canonical parsed form and, when the original spelling must be kept, the text.
 - Make `ParseX` its only constructor from text. Implement `UnmarshalText` by calling it, and `MarshalText` by writing the text back, so JSON and YAML decoding validate it too.
-- Let the zero value mean "absent", with an `IsZero` method. Use the `omitzero` JSON tag option (Go 1.24 and later) to leave an absent value out.
+- Let the zero value mean "absent", with an `IsZero` method. The parser never returns the zero value, so absence is unambiguous. Use the `omitzero` JSON tag option (Go 1.24 and later) to leave an absent value out.
 - Give it `String`, returning the original spelling, and `Equal`, comparing canonical forms.
   Don't compare with `==` when the type keeps the spelling, because two spellings of one value would differ.
 
-Outside the package, the only invalid value anyone can build is the zero value, which already means absent, so callers never handle a parse error after construction.
+Outside the package, callers can construct only validated values or the valid zero value representing absence, so they never handle a parse error after construction.
 
 Use a text field and one method when the value is local to one struct:
 
 - Store the text in one field, and add one method that parses it.
 - Return `(T, error)`: the zero `T` when the text is empty, and an error when it's invalid.
+  Use the zero value for absence only when it's unambiguous; when valid text can parse to the zero value, such as `"0"` to an integer, return presence separately, such as `(T, bool, error)`.
   The field is exported, so struct literals and assignments can bypass any validation done at construction; the method must still report invalid text.
 - Validate the text where the struct is built as well, so users see errors early.
 
