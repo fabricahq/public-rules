@@ -3,7 +3,7 @@
 <p>
   <a href="LICENSE.md"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
   <a href="https://github.com/fabricahq/code-rules"><img alt="A Code Rules library" src="https://img.shields.io/badge/Code%20Rules-library-6f42c1"></a>
-  <img alt="13 groups, 125 rules" src="https://img.shields.io/badge/rules-125-brightgreen">
+  <img alt="14 groups, 127 rules" src="https://img.shields.io/badge/rules-127-brightgreen">
 </p>
 
 Fabrica Public Rules Library is a collection of engineering rules that tell coding agents how to write and review production-grade code. Each rule covers one practice, such as reproducing a bug with a test before fixing it, or narrowing unknown values in TypeScript, with examples of what to do, what to avoid, and what a reviewer should check.
@@ -16,6 +16,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 | --- | --: | --- |
 | [Testing](practices/testing/) | 8 | Where to spend testing effort, and how to write tests that stay reliable |
 | [Code design](practices/code-design/) | 3 | Structuring functions, modules, and folders so code stays readable |
+| [Concurrency](practices/concurrency/) | 2 | Keeping shared resources usable and honoring cancellation throughout blocking operations |
 | [Performance](practices/performance/) | 1 | Making code faster where measurement shows it matters |
 | [READMEs](practices/readmes/) | 5 | Writing READMEs that say what a product does for the reader, get them to a first result, and fit the product's tier |
 | [TypeScript](techs/typescript/) | 19 | Writing type-safe, maintainable TypeScript |
@@ -28,7 +29,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 | [Go](techs/go/) | 5 | Writing clear, maintainable Go |
 | [Goose](techs/goose/) | 1 | Organizing SQL migrations managed by goose |
 
-### Browse all 125 rules
+### Browse all 127 rules
 
 <details>
 <summary><strong>Testing</strong> · 8 rules</summary>
@@ -50,6 +51,14 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 - [Express operations as meaningful steps](practices/code-design/express-operations-as-meaningful-steps.md)
 - [Organize code by feature](practices/code-design/organize-code-by-feature.md)
 - [Separate pure computation from effects](practices/code-design/separate-pure-computation-from-effects.md)
+
+</details>
+
+<details>
+<summary><strong>Concurrency</strong> · 2 rules</summary>
+
+- [Honor cancellation and deadlines across every blocking stage](practices/concurrency/honor-cancellation-across-blocking-stages.md)
+- [Keep shared resources alive until their users finish](practices/concurrency/keep-shared-resources-alive-until-users-finish.md)
 
 </details>
 
@@ -246,7 +255,7 @@ It's the same relationship as a package manager and a package. You install Code 
 
 1. [Install Code Rules](https://code-rules.fabricahq.com/start-here/install/) on your local computers.
 2. [Set up your project](https://code-rules.fabricahq.com/start-here/set-up-project/) to use Code Rules.
-3. Add this library as a source. Within the project directory, run the command below. It selects every group; delete the `--groups` lines you don't need.
+3. Add this library as a source. Within the project directory, run the command below. It selects every group in the pinned release; delete the `--groups` lines you don't need.
 
    ```sh
    code-rules project add library fabrica \
