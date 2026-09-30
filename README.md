@@ -25,7 +25,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 | [TanStack Router](techs/tanstack-router/) | 10 | Typed routing, data loading, and navigation with TanStack Router |
 | [Zustand](techs/zustand/) | 10 | Managing shared client state with Zustand |
 | [Playwright](techs/playwright/) | 2 | Writing stable browser tests with Playwright |
-| [Go](techs/go/) | 5 | Writing well-documented Go with useful errors |
+| [Go](techs/go/) | 5 | Writing clear, maintainable Go |
 | [Goose](techs/goose/) | 1 | Organizing SQL migrations managed by goose |
 
 ### Browse all 125 rules
