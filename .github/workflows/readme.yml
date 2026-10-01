@@ -1,0 +1,51 @@
+name: README
+# Check that the README matches the library on every pull request and on main. The
+# Code Rules workflow validates the library itself.
+on:
+  pull_request:
+  push:
+    branches: ['main']
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The README check runs `code-rules library check`, which compares rules with
+          # the latest library release, so it needs every tag and the full history.
+          fetch-depth: 0
+          persist-credentials: false
+      # The Code Rules workflow runs `code-rules library check`; the README check only
+      # compares its counts with it. Install the version that workflow pins, so both
+      # agree, and verify it the same way: the build attestation of the checksum
+      # manifest, then the archive against it.
+      - name: Install Code Rules
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^ *version=//p' .github/workflows/code-rules.yml)
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]
+          archive="code-rules_${version}_linux_amd64.tar.gz"
+          dir="$RUNNER_TEMP/code-rules"
+          mkdir -p "$dir" && cd "$dir"
+          gh release download "v$version" --repo fabricahq/code-rules \
+            --pattern SHA256SUMS --pattern "$archive"
+          gh attestation verify SHA256SUMS --repo fabricahq/code-rules \
+            --signer-workflow fabricahq/code-rules/.github/workflows/release-planner.yml \
+            --source-ref refs/heads/main
+          checksum=$(sha256sum "$archive")
+          grep -qxF "$checksum" SHA256SUMS
+          tar -xzf "$archive" code-rules
+          echo "$dir" >> "$GITHUB_PATH"
+          echo "Checked with Code Rules $(./code-rules --version)" >> "$GITHUB_STEP_SUMMARY"
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: '0.12.19'
+          enable-cache: false
+      - name: Check that README.md matches the library
+        run: uv run .github/scripts/check-readme.py
