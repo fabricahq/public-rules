@@ -11,4 +11,4 @@ code-rules library check
 uv run .github/scripts/check-readme.py
 ```
 
-The **Check** workflow runs both on every pull request.
+The **Code Rules** and **README** workflows run them on every pull request.

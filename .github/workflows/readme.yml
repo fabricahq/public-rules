@@ -1,4 +1,4 @@
-name: Check
+name: README
 # Check that the README matches the library on every pull request and on main. The
 # Code Rules workflow validates the library itself.
 on:
@@ -11,7 +11,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
-  check:
+  readme:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
