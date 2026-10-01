@@ -246,21 +246,26 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 
 [Code Rules](https://github.com/fabricahq/code-rules) is the tool, and this repository is content for it:
 
-- **Code Rules** is a command-line tool that manages the rules your agents follow in a project. It imports rules from libraries, pins each library to a version, and builds the guidance your agents read.
-- **This library** is one collection of rules you can import with it. [Fabrica](https://fabricahq.com) wrote or curated these rules from its own experience and publishes them as versioned releases.
+- **Code Rules** is a command-line tool that manages the rules your agents follow in a project. It imports rules from libraries, tracks the version of each rule, and builds the guidance your agents read.
+- **This library** is one collection of rules you can import with it. [Fabrica](https://fabricahq.com) wrote or curated these rules from its own experience and publishes them in library releases.
 
 It's the same relationship as a package manager and a package. You install Code Rules once, then add this library to each project, alongside any others, such as your own team's rules.
+
+### How are rules versioned?
+
+Each rule has its own semantic version, such as `1.2.0`. A major version means code that followed the previous version could fail the new one. Changes reach your project in library releases, tagged `release/1`, `release/2`, and so on. Each one lists every changed rule with a summary of the change. Your project keeps the rule versions it has until you run `code-rules project update`, which shows what changed and applies it only when you confirm. See [Version your rules](https://code-rules.fabricahq.com/guides/version-rules/) and [Update rules](https://code-rules.fabricahq.com/guides/update/).
 
 ## How do I use this repo?
 
 1. [Install Code Rules](https://code-rules.fabricahq.com/start-here/install/) on your local computers.
 2. [Set up your project](https://code-rules.fabricahq.com/start-here/set-up-project/) to use Code Rules.
-3. Add this library as a source. Within the project directory, run the command below. It selects every group in the pinned release; delete the `--groups` lines you don't need.
+3. Add this library as a source. Within the project directory, run the command below. It selects every group; delete the `--groups` lines you don't need. Each rule follows its newest version when you update.
 
    ```sh
    code-rules project add library fabrica \
      --repository https://github.com/fabricahq/public-rules.git \
      --groups practices/code-design \
+     --groups practices/concurrency \
      --groups practices/performance \
      --groups practices/readmes \
      --groups practices/testing \
@@ -272,11 +277,10 @@ It's the same relationship as a package manager and a package. You install Code 
      --groups techs/tanstack-query \
      --groups techs/tanstack-router \
      --groups techs/typescript \
-     --groups techs/zustand \
-     --ref v1.1.0
+     --groups techs/zustand
    ```
 
-   To take every group, including ones added in future versions, pass a single wildcard instead: `--groups '*'` for everything, `--groups 'practices/*'` for all practice groups, or `--groups 'techs/*'` for all technology groups. Quote the wildcard so your shell doesn't expand it. See [Select groups from each source](https://code-rules.fabricahq.com/guides/select-rules/#select-groups-from-each-source).
+   To take every group, including ones added in future library releases, pass a single wildcard instead: `--groups '*'` for everything, `--groups 'practices/*'` for all practice groups, or `--groups 'techs/*'` for all technology groups. Quote the wildcard so your shell doesn't expand it. See [Select groups from each source](https://code-rules.fabricahq.com/guides/select-rules/#select-groups-from-each-source).
 
    You can also leave out individual rules from a group you import. See [Exclude a rule](https://code-rules.fabricahq.com/guides/select-rules/#exclude-a-rule).
 
@@ -312,16 +316,28 @@ These rules come from Fabrica's own real-world experience, and yours may differ.
 
 Open a pull request!
 
-Be sure to follow the [Code Rules authoring rubric](https://code-rules.fabricahq.com/reference/rule-authoring/), and validate the library from its root before you push:
+Be sure to follow the [Code Rules authoring rubric](https://code-rules.fabricahq.com/reference/rule-authoring/).
+
+When you change, add, or retire a rule, record a change note in the same pull request with `code-rules library change`. The note says how large the change is (`major`, `minor`, or `patch`) and summarizes it in one line for the people deciding whether to update. For example:
+
+```sh
+code-rules library change practices/testing/cover-boundary-cases \
+  --bump minor \
+  --summary 'Add an example of testing the largest allowed input.'
+```
+
+A new rule leaves out `--bump`, and a retired rule uses `--retire`. See [Change rules after the first library release](https://code-rules.fabricahq.com/guides/version-rules/#change-rules-after-the-first-library-release) for how to choose the level and record each kind of change.
+
+Then validate the library from its root before you push:
 
 ```sh
 code-rules library check
 uv run .github/scripts/check-readme.py
 ```
 
-The second command checks that this README still lists every group and rule. Pull request checks run both.
+The first command checks the rules and their change notes, and previews the next library release. The second checks that this README still lists every group and rule. Pull request checks run both.
 
-Maintainers review changes in pull requests. For the file format, see [Rule and library format](https://code-rules.fabricahq.com/reference/rule-library-format/).
+Maintainers review changes in pull requests, then publish them to projects in the next library release. For the file format, see [Rule and library format](https://code-rules.fabricahq.com/reference/rule-library-format/).
 
 ## License and sources
 
