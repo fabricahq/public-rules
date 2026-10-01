@@ -1,5 +1,6 @@
 name: Check
-# Validate the library and its README on every pull request and on main. The Release
+# Check that the README matches the library on every pull request and on main. The
+# Code Rules workflow validates the library itself. The Release
 # workflow also calls it on the release commit, which adds the README install check.
 on:
   pull_request:
@@ -24,26 +25,33 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
+          # The README check runs `code-rules library check`, which compares rules with
+          # the latest library release, so it needs every tag and the full history.
+          fetch-depth: 0
           persist-credentials: false
-      # Use the latest stable release so the library is always checked with the
-      # current CLI. Verify the build attestation of the checksum manifest, then
-      # the archive against it, so no downloaded script runs unverified.
-      - name: Install the latest Code Rules release
+      # The Code Rules workflow runs `code-rules library check`; the README check only
+      # compares its counts with it. Install the version that workflow pins, so both
+      # agree, and verify it the same way: the build attestation of the checksum
+      # manifest, then the archive against it.
+      - name: Install Code Rules
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          version=$(sed -n 's/^ *version=//p' .github/workflows/code-rules.yml)
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]
+          archive="code-rules_${version}_linux_amd64.tar.gz"
           dir="$RUNNER_TEMP/code-rules"
           mkdir -p "$dir" && cd "$dir"
-          gh release download --repo fabricahq/code-rules --pattern SHA256SUMS --pattern 'code-rules_*_linux_amd64.tar.gz'
+          gh release download "v$version" --repo fabricahq/code-rules \
+            --pattern SHA256SUMS --pattern "$archive"
           gh attestation verify SHA256SUMS --repo fabricahq/code-rules \
             --signer-workflow fabricahq/code-rules/.github/workflows/release-planner.yml \
             --source-ref refs/heads/main
-          sha256sum --check --ignore-missing SHA256SUMS
-          tar -xzf code-rules_*_linux_amd64.tar.gz code-rules
+          checksum=$(sha256sum "$archive")
+          grep -qxF "$checksum" SHA256SUMS
+          tar -xzf "$archive" code-rules
           echo "$dir" >> "$GITHUB_PATH"
           echo "Checked with Code Rules $(./code-rules --version)" >> "$GITHUB_STEP_SUMMARY"
-      - name: Check the library
-        run: code-rules library check
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           version: '0.12.19'
