@@ -12,21 +12,3 @@ uv run .github/scripts/check-readme.py
 ```
 
 The **Check** workflow runs both on every pull request.
-
-<!-- release-planner:begin v0.3.2 sha256:eab1df264ef5ac2d -->
-## Releases
-
-This repository publishes releases with [Release Planner](https://github.com/fabricahq/release-planner) v0.3.2. When asked to make a release, draft or revise release notes, or retry a failed release, print the release procedure and follow it:
-
-```sh
-release-planner guide
-```
-
-First check that `release-planner version` prints `v0.3.2`. If it doesn't, or `release-planner` isn't installed, install that version:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/fabricahq/release-planner/v0.3.2/install.sh | sh -s -- --version v0.3.2
-```
-
-Read `.release-planner/policy.md` first for this repository's release policy. You prepare the release pull request; the maintainer approves the release by merging it. Never tag, publish, or merge.
-<!-- release-planner:end -->

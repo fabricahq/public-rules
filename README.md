@@ -321,7 +321,7 @@ uv run .github/scripts/check-readme.py
 
 The second command checks that this README still lists every group and rule. Pull request checks run both.
 
-Maintainers review changes in pull requests. Releases are made with [Release Planner](https://github.com/fabricahq/release-planner): an agent drafts the notes in a release pull request, and merging it tags and publishes the release. The [release policy](.release-planner/policy.md) explains how versions are chosen and what counts as a breaking change. Released tags never move. For the file format, see [Rule and library format](https://code-rules.fabricahq.com/reference/rule-library-format/).
+Maintainers review changes in pull requests. For the file format, see [Rule and library format](https://code-rules.fabricahq.com/reference/rule-library-format/).
 
 ## License and sources
 

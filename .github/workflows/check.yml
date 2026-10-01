@@ -1,20 +1,12 @@
 name: Check
 # Check that the README matches the library on every pull request and on main. The
-# Code Rules workflow validates the library itself. The Release
-# workflow also calls it on the release commit, which adds the README install check.
+# Code Rules workflow validates the library itself.
 on:
   pull_request:
   push:
     branches: ['main']
-  workflow_call:
-    inputs:
-      ref:
-        description: 'Release commit to check'
-        required: true
-        type: string
 permissions:
   contents: read
-# A called run takes the caller's workflow name, so it never cancels a pull request run.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -24,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ inputs.ref }}
           # The README check runs `code-rules library check`, which compares rules with
           # the latest library release, so it needs every tag and the full history.
           fetch-depth: 0
@@ -58,8 +49,3 @@ jobs:
           enable-cache: false
       - name: Check that README.md matches the library
         run: uv run .github/scripts/check-readme.py
-      # Between releases the install command pins the previous release, so only check it
-      # on the release commit.
-      - name: Check that the README install command pins this release
-        if: inputs.ref != ''
-        run: python3 .github/scripts/check-readme-install.py
