@@ -6,7 +6,7 @@ Use the Code Rules version that `.github/workflows/code-rules.yml` pins, so your
 
 ## Rules
 
-Write and revise rules with the [Code Rules rule rubric and template](https://code-rules.fabricahq.com/reference/rule-authoring/). When you add, remove, rename, or retitle a rule or group, update the README's rule count badge, group table, and rule lists to match.
+Write and revise rules with the [Code Rules rule rubric and template](https://code-rules.fabricahq.com/reference/rule-authoring/). When you add, remove, rename, or retitle a rule or group, update the README's rule count badge, group table, rule lists, and install command to match.
 
 ## Change notes
 

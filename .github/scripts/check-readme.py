@@ -5,15 +5,17 @@
 # ///
 """Check that README.md lists exactly the groups and rules in the library.
 
-Checks the rule count badge, the group table, and the "Browse all N rules"
-lists against the library files, and the totals against `code-rules library
-check`. Run from the repository root with code-rules on PATH:
+Checks the rule count badge, the group table, the "Browse all N rules" lists,
+and the groups the install command selects against the library files, and
+the totals against `code-rules library check`. Run from the repository root
+with code-rules on PATH:
 
     uv run .github/scripts/check-readme.py
 """
 
 import json
 import re
+import shlex
 import subprocess
 import sys
 from collections import Counter
@@ -22,6 +24,7 @@ from pathlib import Path
 import yaml
 
 GROUP_ROOTS = ("practices", "techs")
+INSTALL_COMMAND = "code-rules project add library"
 
 errors = []
 
@@ -155,6 +158,49 @@ def check_rule_lists(readme, groups, rule_count):
         fail(f"rule lists are missing {path}")
 
 
+def install_groups(readme):
+    """Return the --groups values of the README's command that adds this library.
+
+    Joins the command's continuation lines and splits it as the shell would, so comments
+    and other commands in the same code block don't count. Returns None, after recording
+    a failure, unless the README has exactly one such command.
+    """
+    lines = readme.splitlines()
+    starts = [i for i, line in enumerate(lines) if line.strip().startswith(INSTALL_COMMAND)]
+    if len(starts) != 1:
+        fail(f"README.md should contain exactly one `{INSTALL_COMMAND}` command")
+        return None
+    index = starts[0]
+    command = lines[index].rstrip()
+    while command.endswith("\\") and index + 1 < len(lines):
+        index += 1
+        command = command[:-1] + lines[index].rstrip()
+
+    selected = []
+    words = iter(shlex.split(command, comments=True))
+    for word in words:
+        name, equals, value = word.partition("=")
+        if name == "--groups":
+            selected.append(value if equals else next(words, ""))
+    return selected
+
+
+def check_install_command(readme, groups):
+    """Fail unless the install command selects every group exactly once, in order."""
+    selected = install_groups(readme)
+    if selected is None:
+        return
+    for group in sorted(groups.keys() - set(selected)):
+        fail(f"install command is missing --groups {group}")
+    for group in sorted(set(selected) - groups.keys()):
+        fail(f"install command selects --groups {group}, which is not a group")
+    for group, count in sorted(Counter(selected).items()):
+        if count > 1:
+            fail(f"install command selects --groups {group} more than once")
+    if selected != sorted(selected):
+        fail("install command should list --groups in alphabetical order")
+
+
 def main():
     groups = load_groups()
     check_totals(groups)
@@ -163,6 +209,7 @@ def main():
     check_badge(readme, len(groups), rule_count)
     check_table(readme, groups)
     check_rule_lists(readme, groups, rule_count)
+    check_install_command(readme, groups)
     if errors:
         print("README.md does not match the library:", file=sys.stderr)
         for error in errors:
