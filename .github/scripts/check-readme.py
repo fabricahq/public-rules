@@ -76,9 +76,9 @@ def check_totals(groups):
         sys.exit(f"code-rules library check failed:\n{result.stdout}")
     value = response["value"]
     rules = sum(len(group_rules) for _, group_rules in groups.values())
-    if (value["groups"], value["rules"]) != (len(groups), rules):
+    if (value["groupCount"], value["ruleCount"]) != (len(groups), rules):
         sys.exit(
-            f"code-rules counts {value['groups']} groups and {value['rules']} rules, "
+            f"code-rules counts {value['groupCount']} groups and {value['ruleCount']} rules, "
             f"but this check found {len(groups)} and {rules}; update {__file__}"
         )
 
