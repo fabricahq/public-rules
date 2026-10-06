@@ -1,0 +1,3 @@
+summary: Requires page-load work to wait for the load event and a painted frame before idle time, and limits the rule to work your own code runs; loading analytics and monitoring scripts moved to its own rule.
+rules:
+  techs/javascript/defer-non-critical-work-to-idle-time: major
