@@ -1,0 +1,3 @@
+summary: 'New rule: load page-view analytics and real user monitoring scripts in their vendor-documented non-blocking form, without idle, timer, load, or interaction delays.'
+rules:
+  techs/javascript/load-measurement-scripts-as-documented: new

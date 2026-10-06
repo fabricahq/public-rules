@@ -3,7 +3,7 @@
 <p>
   <a href="LICENSE.md"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue"></a>
   <a href="https://github.com/fabricahq/code-rules"><img alt="A Code Rules library" src="https://img.shields.io/badge/Code%20Rules-library-6f42c1"></a>
-  <img alt="14 groups, 127 rules" src="https://img.shields.io/badge/rules-127-brightgreen">
+  <img alt="14 groups, 128 rules" src="https://img.shields.io/badge/rules-128-brightgreen">
 </p>
 
 Fabrica Public Rules Library is a collection of engineering rules that tell coding agents how to write and review production-grade code. Each rule covers one practice, such as reproducing a bug with a test before fixing it, or narrowing unknown values in TypeScript, with examples of what to do, what to avoid, and what a reviewer should check.
@@ -20,7 +20,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 | [Performance](practices/performance/) | 1 | Making code faster where measurement shows it matters |
 | [READMEs](practices/readmes/) | 5 | Writing READMEs that say what a product does for the reader, get them to a first result, and fit the product's tier |
 | [TypeScript](techs/typescript/) | 19 | Writing type-safe, maintainable TypeScript |
-| [JavaScript](techs/javascript/) | 7 | Async work, browser APIs, and build-friendly code in JavaScript and TypeScript |
+| [JavaScript](techs/javascript/) | 8 | Async work, browser APIs, and build-friendly code in JavaScript and TypeScript |
 | [React](techs/react/) | 39 | Building correct, accessible, and fast React interfaces, on the client and server |
 | [TanStack Query](techs/tanstack-query/) | 15 | Fetching, caching, and updating server data with TanStack Query |
 | [TanStack Router](techs/tanstack-router/) | 10 | Typed routing, data loading, and navigation with TanStack Router |
@@ -29,7 +29,7 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 | [Go](techs/go/) | 5 | Writing clear, maintainable Go |
 | [Goose](techs/goose/) | 1 | Organizing SQL migrations managed by goose |
 
-### Browse all 127 rules
+### Browse all 128 rules
 
 <details>
 <summary><strong>Testing</strong> · 8 rules</summary>
@@ -106,12 +106,13 @@ The rules are organized into groups. Practice groups (`practices/`) apply in any
 </details>
 
 <details>
-<summary><strong>JavaScript</strong> · 7 rules</summary>
+<summary><strong>JavaScript</strong> · 8 rules</summary>
 
 - [Avoid layout thrashing](techs/javascript/avoid-layout-thrashing.md)
 - [Await only on paths that need the result](techs/javascript/await-only-on-paths-that-need-the-result.md)
 - [Defer non-critical browser work to idle time](techs/javascript/defer-non-critical-work-to-idle-time.md)
 - [Keep dynamic import and file paths statically analyzable](techs/javascript/keep-import-and-file-paths-analyzable.md)
+- [Load measurement scripts the way their vendors document](techs/javascript/load-measurement-scripts-as-documented.md)
 - [Start independent asynchronous work concurrently](techs/javascript/start-independent-async-work-concurrently.md)
 - [Mark scroll-related listeners passive when they never cancel scrolling](techs/javascript/use-passive-scroll-and-touch-listeners.md)
 - [Version and minimize data in browser storage](techs/javascript/version-and-minimize-browser-storage.md)
