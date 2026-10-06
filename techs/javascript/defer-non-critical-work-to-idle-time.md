@@ -18,7 +18,7 @@ This rule covers work your own code runs. It does not govern when a third-party 
 ### Implementation
 
 - After an interaction, schedule the work with `requestIdleCallback`.
-- During page load, wait for the `load` event and the next animation frame before calling `requestIdleCallback`. Before the first paint, the browser can be idle while it waits for resources, so `requestIdleCallback` alone can run the work before anything is on screen.
+- During page load, wait for the `load` event and the next animation frame before calling `requestIdleCallback`. Before the first paint, the browser can be idle while it waits for resources, so `requestIdleCallback` alone can run the work before anything is on screen. An animation frame callback runs just before that frame renders, so an idle callback or timer requested from it runs after the render.
 - Pass a `timeout` when the work must run even if the browser stays busy.
 - Fall back to `setTimeout` in browsers without `requestIdleCallback`; check the project's target browsers.
 - Split large jobs into chunks that check `deadline.timeRemaining()` and reschedule themselves.
@@ -88,7 +88,7 @@ The prefetch waits until the loaded page paints a frame, then for idle time. Hid
 
 ### Validation
 
-Record a performance profile of the interaction or page load and check that the deferred work runs after the result is painted. For page-load work, compare against the `paintTime` of the `first-contentful-paint` entry where the browser provides it; its `startTime` is when the frame reached the screen, which can be later.
+Record a performance profile of the interaction or page load and check that the deferred work runs after the result is painted. For page-load work, compare against the `paintTime` of the `first-contentful-paint` entry, which Chrome and Firefox provide. In those browsers `startTime` is when the frame reached the screen, which can be a few milliseconds after the render, so work that runs between the two is not a violation.
 Check that a fallback exists for browsers without `requestIdleCallback`.
 
 Running work immediately is not a violation when the user is waiting for its result.

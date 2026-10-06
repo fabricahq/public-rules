@@ -22,7 +22,7 @@ This rule covers scripts whose job is to measure visits or page performance. Oth
 
 These scripts measure the page load themselves and report when the page is hidden.
 They start observing and register that report only when they run, so a delayed script loses visits that end first and misses interactions that happened before it started observing.
-The vendor's non-blocking form already keeps the script off the rendering path, so delaying it further gains no rendering time.
+The vendor's non-blocking form keeps the script from blocking HTML parsing. Running it still takes main-thread time, but a measurement script is small, and delaying it costs data on every short visit. If a script's own execution measurably delays rendering, choose a lighter script instead of delaying it.
 
 ### Examples
 
@@ -45,7 +45,7 @@ A visitor who leaves before idle time is never counted, and the beacon misses in
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "SITE_TOKEN"}'></script>
 ```
 
-This is Cloudflare's documented snippet. The module script does not block rendering, and the beacon runs as soon as the page is parsed.
+This is Cloudflare's documented snippet. The module script does not block parsing, and the beacon runs as soon as the page is parsed.
 
 ### Validation
 
