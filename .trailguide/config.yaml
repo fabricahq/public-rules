@@ -1,8 +1,47 @@
 schemaVersion: 2
-sources: {}
+sources:
+  pstack:
+    repository: https://github.com/cursor/plugins.git
+    ref: 09d06eb4b97a1020ab31e84030e38baf1099c7dc
 library:
   license:
     spdxExpression: MIT
     file: LICENSE.md
     notices:
       - NOTICE.md
+  skills:
+    offered:
+      - pstack:pstack/skills/benchmark-checklist
+      - pstack:pstack/skills/bro
+      - pstack:pstack/skills/correct
+      - pstack:pstack/skills/in-your-own-words
+      - pstack:pstack/skills/ketchup
+      - pstack:pstack/skills/principle-attack-the-premise
+      - pstack:pstack/skills/principle-boundary-discipline
+      - pstack:pstack/skills/principle-build-the-lever
+      - pstack:pstack/skills/principle-encode-lessons-in-structure
+      - pstack:pstack/skills/principle-exhaust-the-design-space
+      - pstack:pstack/skills/principle-experience-first
+      - pstack:pstack/skills/principle-explain-the-number
+      - pstack:pstack/skills/principle-fix-root-causes
+      - pstack:pstack/skills/principle-foundational-thinking
+      - pstack:pstack/skills/principle-guard-the-context-window
+      - pstack:pstack/skills/principle-laziness-protocol
+      - pstack:pstack/skills/principle-make-operations-idempotent
+      - pstack:pstack/skills/principle-migrate-callers-then-delete-legacy-apis
+      - pstack:pstack/skills/principle-minimize-reader-load
+      - pstack:pstack/skills/principle-model-the-domain
+      - pstack:pstack/skills/principle-never-block-on-the-human
+      - pstack:pstack/skills/principle-outcome-oriented-execution
+      - pstack:pstack/skills/principle-prove-it-works
+      - pstack:pstack/skills/principle-redesign-from-first-principles
+      - pstack:pstack/skills/principle-separate-before-serializing-shared-state
+      - pstack:pstack/skills/principle-sequence-verifiable-units
+      - pstack:pstack/skills/principle-subtract-before-you-add
+      - pstack:pstack/skills/principle-test-behavior-not-implementation
+      - pstack:pstack/skills/principle-type-system-discipline
+      - pstack:pstack/skills/sharpen
+      - pstack:pstack/skills/tdd
+      - pstack:pstack/skills/technical-writing
+      - pstack:pstack/skills/typescript-best-practices
+      - pstack:pstack/skills/unslop

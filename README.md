@@ -243,6 +243,71 @@ The rules live in `.trailguide/rules/` and are organized into groups. Practice g
 
 </details>
 
+## What skills are included?
+
+The library also offers 34 skills from [pstack](https://github.com/cursor/plugins/tree/09d06eb4b97a1020ab31e84030e38baf1099c7dc/pstack), Lauren Tan's Agent Skills collection, under its MIT license. They're curated: this library chooses them and pins the pstack commit it reviewed, and your project fetches each skill from pstack's repository when it syncs. Each one is marked to load only when you invoke it by name, such as `/tdd`.
+
+The library offers every skill without recommending or requiring it, so a project installs only the skills it names. A skill's ID is `pstack:pstack/skills/<name>`. For example, to install two of them, add a `skills` section to this library's source in `.trailguide/config.yaml`:
+
+```yaml
+sources:
+  fabrica:
+    skills:
+      include:
+        - pstack:pstack/skills/principle-prove-it-works
+        - pstack:pstack/skills/tdd
+```
+
+Or include `"*"` to take all 34. Then run `trailguide project sync`. See [Install skills](https://trailguide.fabricahq.com/guides/install-skills/).
+
+<details>
+<summary><strong>Principles</strong> · 24 skills</summary>
+
+- `principle-attack-the-premise`: after two failed fixes that share a premise, test the premise
+- `principle-boundary-discipline`: validate at system boundaries and trust internal types
+- `principle-build-the-lever`: build the script, codemod, or generator instead of working by hand
+- `principle-encode-lessons-in-structure`: turn a repeated instruction into a lint, check, or script
+- `principle-exhaust-the-design-space`: prototype competing designs before committing to a new one
+- `principle-experience-first`: favor user delight over implementation convenience
+- `principle-explain-the-number`: find what limits a measured number before trusting it
+- `principle-fix-root-causes`: fix a symptom where the system first went wrong
+- `principle-foundational-thinking`: get the core types and data structures right before logic
+- `principle-guard-the-context-window`: keep bulk output out of the main thread
+- `principle-laziness-protocol`: prefer deletion and the smallest change that works
+- `principle-make-operations-idempotent`: converge to the same end state after crashes and retries
+- `principle-migrate-callers-then-delete-legacy-apis`: move every caller and delete the old API together
+- `principle-minimize-reader-load`: collapse layers and hidden state a reader has to trace
+- `principle-model-the-domain`: model stateful logic so the code branches less
+- `principle-never-block-on-the-human`: proceed on reversible work, and confirm irreversible actions
+- `principle-outcome-oriented-execution`: converge on the target architecture in a planned rewrite
+- `principle-prove-it-works`: verify against the real artifact before calling work done; it mentions `show-me-your-work` for an audit trail, which isn't curated here
+- `principle-redesign-from-first-principles`: redesign when a new requirement doesn't fit the design
+- `principle-separate-before-serializing-shared-state`: remove shared writers before serializing them
+- `principle-sequence-verifiable-units`: split work into small units that each end verified
+- `principle-subtract-before-you-add`: remove dead code before building on it
+- `principle-test-behavior-not-implementation`: assert what the code's users can observe
+- `principle-type-system-discipline`: make illegal states unrepresentable
+
+</details>
+
+<details>
+<summary><strong>Tasks</strong> · 10 skills</summary>
+
+- `benchmark-checklist`: vet a performance measurement before reporting or acting on it
+- `bro`: restate the last message in plain language
+- `correct`: make the mistakes agents repeat in a repository impossible
+- `in-your-own-words`: restate the user's goals and problem
+- `ketchup`: catch the user up on what changed since their last message
+- `sharpen`: sharpen a task before starting it
+- `tdd`: fix a bug with a regression test written first
+- `technical-writing`: write and review docs, PR descriptions, and commit messages to a layered standard
+- `typescript-best-practices`: TypeScript type-safety practices
+- `unslop`: cut AI tells from writing
+
+</details>
+
+The rest of pstack isn't curated here. `poteto-mode` and the skills that delegate to subagents pick each subagent's model from a Cursor rule that defaults code work to Grok. The others depend on those skills, on Cursor-only paths or services, or on pstack's own setup, and `no-comments` conflicts with this library's comment rules.
+
 ## How does it relate to Trail Guide?
 
 [Trail Guide](https://github.com/fabricahq/trailguide) is the tool, and this repository is content for it:
@@ -344,4 +409,4 @@ Maintainers review changes in pull requests, then publish them to projects in th
 
 The library is [MIT licensed](LICENSE.md), with copyright attributed to Fabrica Systems LLC.
 
-Some rules adapt material from third parties, and others draw on official documentation. Adapted rules carry attribution in their metadata, and [NOTICE.md](NOTICE.md) preserves the required third-party notices.
+Some rules adapt material from third parties, and others draw on official documentation. Adapted rules carry attribution in their metadata, and [NOTICE.md](NOTICE.md) preserves the required third-party notices. The curated pstack skills stay under pstack's own MIT license, which NOTICE.md also reproduces.

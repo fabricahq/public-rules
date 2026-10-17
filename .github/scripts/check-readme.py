@@ -129,7 +129,7 @@ def check_rule_lists(readme, groups, rule_count):
         fail(f"rule list heading should be: {heading}")
 
     blocks = re.findall(
-        r"<summary><strong>([^<]+)</strong> · ([^<]+)</summary>(.*?)</details>", readme, re.DOTALL
+        r"<summary><strong>([^<]+)</strong> · ([0-9]+ rules?)</summary>(.*?)</details>", readme, re.DOTALL
     )
     seen = set()
     for name, summary_count, body in blocks:

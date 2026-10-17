@@ -8,6 +8,10 @@ Use the Trail Guide version that `.github/workflows/trailguide.yml` pins, so you
 
 Write and revise rules with the [Trail Guide rule rubric and template](https://trailguide.fabricahq.com/reference/rule-authoring/). When you add, remove, rename, or retitle a rule or group, update the README's rule count badge, group table, rule lists, and install command to match.
 
+## Skills
+
+The library curates skills from [pstack](https://github.com/cursor/plugins/tree/main/pstack): the `pstack` source in `.trailguide/config.yaml` pins a `cursor/plugins` commit, and `library.skills.offered` lists each curated skill. Curated skills need no change notes. Leave out any pstack skill that picks subagent models, depends on Cursor-only paths or services, needs a left-out skill to carry out its steps, or conflicts with this library's rules. To add or drop a skill, or to move the pinned commit, read each listed skill's files at the new commit against those criteria, then update the README's skills section and the commit in NOTICE.md to match. When a curated skill only mentions a left-out skill, say so in its README line.
+
 ## Change notes
 
 Each rule has its own version, and library releases publish rule changes to projects. Once the library has published its first library release, a `release/1` tag, every new, changed, or retired rule needs a change note in `.trailguide/changes/`. Record it with `trailguide library change` in the same pull request as the rule change:

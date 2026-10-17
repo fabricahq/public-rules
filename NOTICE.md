@@ -93,6 +93,32 @@ The Zustand rules are original guidance informed by documentation and examples, 
 
 These references do not transfer ownership of the upstream material to Fabrica.
 
+## pstack
+
+The library curates skills from [pstack](https://github.com/cursor/plugins/tree/09d06eb4b97a1020ab31e84030e38baf1099c7dc/pstack) by Lauren Tan, at commit `09d06eb4b97a1020ab31e84030e38baf1099c7dc` of `cursor/plugins`. Projects fetch those skills from that repository, so the skills are not part of this library and its MIT declaration does not cover them. pstack's own MIT license covers them; it keeps the notice in [`pstack/LICENSE`](https://github.com/cursor/plugins/blob/09d06eb4b97a1020ab31e84030e38baf1099c7dc/pstack/LICENSE) rather than in each skill folder, so it is reproduced unchanged below.
+
+MIT License
+
+Copyright (c) 2026 Lauren Tan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 ## Testing philosophy reference
 
 `assets/testing-philosophy.md` is based on Yevgeniy Brikman's talk [Agility Requires Safety](https://www.ybrikman.com/blog/2016/02/14/agility-requires-safety/) (2016). The asset paraphrases and extends its ideas in original wording; no text or slides from the talk are reproduced, and the talk remains his work.
